@@ -1,0 +1,65 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* 自定义样式 */
+.App {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Canvas样式 */
+.canvas-container {
+  position: relative;
+  background: #f8f9fa;
+}
+
+/* 工具栏样式 */
+.toolbar-item {
+  transition: all 0.2s ease;
+}
+
+.toolbar-item:hover {
+  transform: translateY(-1px);
+}
+
+/* 聊天面板样式 */
+.chat-message {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  
+  .canvas-area {
+    height: 60vh;
+  }
+  
+  .chat-panel {
+    height: 40vh;
+  }
+}
