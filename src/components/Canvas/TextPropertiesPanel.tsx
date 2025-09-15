@@ -3,6 +3,7 @@ import { Card, Select, ColorPicker, Slider, Space, Typography, Divider, Button }
 import { CloseOutlined } from '@ant-design/icons';
 import { useCanvasStore } from '@/stores/canvasStore';
 import { useToolStore } from '@/stores/toolStore';
+import { useFabricCanvas } from '@/hooks/useFabricCanvas';
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -11,10 +12,16 @@ export const TextPropertiesPanel: React.FC = () => {
   const { selectedElement, elements, updateElement, selectElement } = useCanvasStore();
   const { updateToolOptions } = useToolStore();
   const [isVisible, setIsVisible] = useState(false);
+  const fabricCanvas = useFabricCanvas();
 
   const selectedTextElement = selectedElement 
     ? elements.find(el => el.id === selectedElement && el.type === 'text')
     : null;
+
+  // 调试信息
+  useEffect(() => {
+    console.log('TextPropertiesPanel - Fabric canvas available:', !!fabricCanvas);
+  }, [fabricCanvas]);
 
   // 当选中文本元素时显示面板
   useEffect(() => {
@@ -31,10 +38,31 @@ export const TextPropertiesPanel: React.FC = () => {
   });
 
   const handleFontSizeChange = (value: number) => {
+    console.log('Font size change:', value, 'Selected element:', selectedTextElement);
+    
     if (selectedTextElement) {
+      // 更新 Zustand 状态
       updateElement(selectedTextElement.id, {
         style: { ...selectedTextElement.style, fontSize: value }
       });
+      
+      // 更新 Fabric.js 画布对象
+      if (fabricCanvas) {
+        console.log('Fabric canvas found, updating object...');
+        const activeObject = fabricCanvas.getActiveObject();
+        console.log('Active object:', activeObject);
+        
+        if (activeObject && activeObject.type === 'i-text') {
+          console.log('Updating IText fontSize to:', value);
+          (activeObject as any).set('fontSize', value);
+          fabricCanvas.renderAll();
+          console.log('Font size updated successfully');
+        } else {
+          console.log('No active IText object found');
+        }
+      } else {
+        console.log('Fabric canvas not found');
+      }
     } else {
       updateToolOptions('text', { fontSize: value });
     }
@@ -42,9 +70,19 @@ export const TextPropertiesPanel: React.FC = () => {
 
   const handleFontFamilyChange = (value: string) => {
     if (selectedTextElement) {
+      // 更新 Zustand 状态
       updateElement(selectedTextElement.id, {
         style: { ...selectedTextElement.style, fontFamily: value }
       });
+      
+      // 更新 Fabric.js 画布对象
+      if (fabricCanvas) {
+        const activeObject = fabricCanvas.getActiveObject();
+        if (activeObject && activeObject.type === 'i-text') {
+          (activeObject as any).set('fontFamily', value);
+          fabricCanvas.renderAll();
+        }
+      }
     } else {
       updateToolOptions('text', { fontFamily: value });
     }
@@ -52,9 +90,19 @@ export const TextPropertiesPanel: React.FC = () => {
 
   const handleColorChange = (color: string) => {
     if (selectedTextElement) {
+      // 更新 Zustand 状态
       updateElement(selectedTextElement.id, {
         style: { ...selectedTextElement.style, fill: color }
       });
+      
+      // 更新 Fabric.js 画布对象
+      if (fabricCanvas) {
+        const activeObject = fabricCanvas.getActiveObject();
+        if (activeObject && activeObject.type === 'i-text') {
+          (activeObject as any).set('fill', color);
+          fabricCanvas.renderAll();
+        }
+      }
     } else {
       updateToolOptions('text', { fillColor: color });
     }
@@ -62,9 +110,19 @@ export const TextPropertiesPanel: React.FC = () => {
 
   const handleTextAlignChange = (value: string) => {
     if (selectedTextElement) {
+      // 更新 Zustand 状态
       updateElement(selectedTextElement.id, {
         style: { ...selectedTextElement.style, textAlign: value as any }
       });
+      
+      // 更新 Fabric.js 画布对象
+      if (fabricCanvas) {
+        const activeObject = fabricCanvas.getActiveObject();
+        if (activeObject && activeObject.type === 'i-text') {
+          (activeObject as any).set('textAlign', value);
+          fabricCanvas.renderAll();
+        }
+      }
     } else {
       updateToolOptions('text', { textAlign: value as any });
     }
@@ -72,9 +130,19 @@ export const TextPropertiesPanel: React.FC = () => {
 
   const handleFontWeightChange = (value: string) => {
     if (selectedTextElement) {
+      // 更新 Zustand 状态
       updateElement(selectedTextElement.id, {
         style: { ...selectedTextElement.style, fontWeight: value }
       });
+      
+      // 更新 Fabric.js 画布对象
+      if (fabricCanvas) {
+        const activeObject = fabricCanvas.getActiveObject();
+        if (activeObject && activeObject.type === 'i-text') {
+          (activeObject as any).set('fontWeight', value);
+          fabricCanvas.renderAll();
+        }
+      }
     } else {
       updateToolOptions('text', { fontWeight: value });
     }
@@ -112,7 +180,7 @@ export const TextPropertiesPanel: React.FC = () => {
           <Slider
             min={8}
             max={72}
-            value={selectedTextElement.style.fontSize || 16}
+            value={selectedTextElement.style?.fontSize || 16}
             onChange={handleFontSizeChange}
             className="mt-2"
           />
@@ -124,7 +192,7 @@ export const TextPropertiesPanel: React.FC = () => {
         <div>
           <Text className="text-sm font-medium">字体</Text>
           <Select
-            value={selectedTextElement.style.fontFamily || 'Arial'}
+            value={selectedTextElement.style?.fontFamily || 'Arial'}
             onChange={handleFontFamilyChange}
             className="w-full mt-2"
           >
@@ -146,7 +214,7 @@ export const TextPropertiesPanel: React.FC = () => {
         <div>
           <Text className="text-sm font-medium">颜色</Text>
           <ColorPicker
-            value={selectedTextElement.style.fill || '#000000'}
+            value={selectedTextElement.style?.fill || '#000000'}
             onChange={(color) => handleColorChange(color.toHexString())}
             className="w-full mt-2"
             showText
@@ -159,7 +227,7 @@ export const TextPropertiesPanel: React.FC = () => {
         <div>
           <Text className="text-sm font-medium">对齐方式</Text>
           <Select
-            value={selectedTextElement.style.textAlign || 'left'}
+            value={selectedTextElement.style?.textAlign || 'left'}
             onChange={handleTextAlignChange}
             className="w-full mt-2"
           >

@@ -4,6 +4,7 @@ import { useCanvasStore } from "@/stores/canvasStore";
 import { useToolStore } from "@/stores/toolStore";
 import { useCommentStore } from "@/stores/commentStore";
 import { ZoomControls } from "./ZoomControls";
+import { setGlobalCanvasInstance } from "@/hooks/useFabricCanvas";
 import { CommentIcon, CommentInput, CommentDetail, CommentSelectionBox } from "../Comment";
 
 export const CanvasArea: React.FC = () => {
@@ -533,6 +534,13 @@ export const CanvasArea: React.FC = () => {
     });
 
     fabricCanvasRef.current = canvas;
+    
+    // 设置全局画布实例
+    setGlobalCanvasInstance(canvas);
+    
+    // 将画布实例暴露到全局，供其他组件使用
+    (canvasRef.current as any).__fabricCanvas = canvas;
+    (window as any).fabricCanvas = canvas;
 
     // 设置画布事件监听
     canvas.on("selection:created", (e) => {
