@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Input, Select, ColorPicker } from 'antd';
+import { Button, Input, Select } from 'antd';
 import { SendOutlined, CloseOutlined } from '@ant-design/icons';
 import { useCommentStore } from '../../stores/commentStore';
 import { COMMENT_COLORS } from '../../types/comment';

@@ -1,27 +1,25 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  List, 
-  Button, 
-  Input, 
-  Select, 
-  Tag, 
-  Space, 
+import { useState } from "react";
+import {
+  List,
+  Button,
+  Input,
+  Select,
+  Tag,
+  Space,
   Popconfirm,
   Tooltip,
-  Divider
-} from 'antd';
-import { 
-  MessageOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
+  Divider,
+} from "antd";
+import {
+  MessageOutlined,
+  EditOutlined,
+  DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
   SearchOutlined,
-  FilterOutlined
-} from '@ant-design/icons';
-import { Comment } from '../../types/comment';
-import { useCommentStore } from '../../stores/commentStore';
+} from "@ant-design/icons";
+import { Comment } from "../../types/comment";
+import { useCommentStore } from "../../stores/commentStore";
 
 export const CommentPanel: React.FC = () => {
   const {
@@ -33,20 +31,24 @@ export const CommentPanel: React.FC = () => {
     updateComment,
   } = useCommentStore();
 
-  const [searchText, setSearchText] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'resolved' | 'unresolved'>('all');
+  const [searchText, setSearchText] = useState("");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "resolved" | "unresolved"
+  >("all");
   const [editingComment, setEditingComment] = useState<string | null>(null);
-  const [editContent, setEditContent] = useState('');
+  const [editContent, setEditContent] = useState("");
 
   // 过滤评论
   const filteredComments = comments.filter((comment) => {
-    const matchesSearch = comment.content.toLowerCase().includes(searchText.toLowerCase()) ||
-                         comment.author.toLowerCase().includes(searchText.toLowerCase());
-    
-    const matchesFilter = filterStatus === 'all' || 
-                         (filterStatus === 'resolved' && comment.isResolved) ||
-                         (filterStatus === 'unresolved' && !comment.isResolved);
-    
+    const matchesSearch =
+      comment.content.toLowerCase().includes(searchText.toLowerCase()) ||
+      comment.author.toLowerCase().includes(searchText.toLowerCase());
+
+    const matchesFilter =
+      filterStatus === "all" ||
+      (filterStatus === "resolved" && comment.isResolved) ||
+      (filterStatus === "unresolved" && !comment.isResolved);
+
     return matchesSearch && matchesFilter;
   });
 
@@ -59,17 +61,17 @@ export const CommentPanel: React.FC = () => {
     if (editingComment && editContent.trim()) {
       updateComment(editingComment, { content: editContent.trim() });
       setEditingComment(null);
-      setEditContent('');
+      setEditContent("");
     }
   };
 
   const handleCancelEdit = () => {
     setEditingComment(null);
-    setEditContent('');
+    setEditContent("");
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleString('zh-CN');
+    return new Date(date).toLocaleString("zh-CN");
   };
 
   return (
@@ -114,7 +116,9 @@ export const CommentPanel: React.FC = () => {
           renderItem={(comment) => (
             <List.Item
               className={`p-4 cursor-pointer hover:bg-gray-50 ${
-                selectedCommentId === comment.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                selectedCommentId === comment.id
+                  ? "bg-blue-50 border-l-4 border-blue-500"
+                  : ""
               }`}
               onClick={() => selectComment(comment.id)}
             >
@@ -126,14 +130,18 @@ export const CommentPanel: React.FC = () => {
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: comment.color }}
                     />
-                    <span className="font-medium text-sm">{comment.author}</span>
+                    <span className="font-medium text-sm">
+                      {comment.author}
+                    </span>
                     <span className="text-xs text-gray-500">
                       {formatDate(comment.createdAt)}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     {comment.isResolved && (
-                      <Tag color="green" style={{ fontSize: '12px' }}>已解决</Tag>
+                      <Tag color="green" style={{ fontSize: "12px" }}>
+                        已解决
+                      </Tag>
                     )}
                     <Tooltip title="编辑">
                       <Button
@@ -146,11 +154,21 @@ export const CommentPanel: React.FC = () => {
                         }}
                       />
                     </Tooltip>
-                    <Tooltip title={comment.isResolved ? "标记为未解决" : "标记为已解决"}>
+                    <Tooltip
+                      title={
+                        comment.isResolved ? "标记为未解决" : "标记为已解决"
+                      }
+                    >
                       <Button
                         type="text"
                         size="small"
-                        icon={comment.isResolved ? <CloseOutlined /> : <CheckOutlined />}
+                        icon={
+                          comment.isResolved ? (
+                            <CloseOutlined />
+                          ) : (
+                            <CheckOutlined />
+                          )
+                        }
                         onClick={(e) => {
                           e.stopPropagation();
                           resolveComment(comment.id);
@@ -190,7 +208,11 @@ export const CommentPanel: React.FC = () => {
                         <Button size="small" onClick={handleCancelEdit}>
                           取消
                         </Button>
-                        <Button size="small" type="primary" onClick={handleSaveEdit}>
+                        <Button
+                          size="small"
+                          type="primary"
+                          onClick={handleSaveEdit}
+                        >
                           保存
                         </Button>
                       </div>
@@ -213,12 +235,16 @@ export const CommentPanel: React.FC = () => {
                             className="w-2 h-2 rounded-full"
                             style={{ backgroundColor: reply.color }}
                           />
-                          <span className="text-xs font-medium">{reply.author}</span>
+                          <span className="text-xs font-medium">
+                            {reply.author}
+                          </span>
                           <span className="text-xs text-gray-500">
                             {formatDate(reply.createdAt)}
                           </span>
                         </div>
-                        <div className="text-xs text-gray-600">{reply.content}</div>
+                        <div className="text-xs text-gray-600">
+                          {reply.content}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -226,7 +252,8 @@ export const CommentPanel: React.FC = () => {
 
                 {/* 位置信息 */}
                 <div className="text-xs text-gray-400 mt-2">
-                  位置: ({Math.round(comment.position.x)}, {Math.round(comment.position.y)})
+                  位置: ({Math.round(comment.position.x)},{" "}
+                  {Math.round(comment.position.y)})
                   {comment.elementId && ` • 关联元素: ${comment.elementId}`}
                 </div>
               </div>

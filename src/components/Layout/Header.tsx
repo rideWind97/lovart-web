@@ -1,17 +1,17 @@
-import React from 'react';
-import { Layout,  Typography, Menu } from 'antd';
-import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
-import { useUserStore } from '@/stores/userStore';
+// import React from 'react';
+import { Layout,  Typography } from 'antd';
+// import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
+// import { useUserStore } from '@/stores/userStore';
 
 const { Header: AntHeader } = Layout;
 const { Title, Text } = Typography;
 
 export const Header: React.FC = () => {
-  const {  logout } = useUserStore();
+  // const {  logout } = useUserStore();
 
-  const handleLogout = () => {
-    logout();
-  };
+  // const handleLogout = () => {
+  //   logout();
+  // };
 
   // const userMenu = (
   //   <Menu

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConfigProvider } from 'antd';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainLayout } from '@/components/Layout/MainLayout';
