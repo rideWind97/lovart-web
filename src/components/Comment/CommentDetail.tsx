@@ -60,6 +60,7 @@ export const CommentDetail: React.FC<CommentDetailProps> = ({
         author: replyAuthor,
         position: comment.position,
         elementId: comment.elementId,
+        isVisible: true,
       });
       setReplyContent('');
     }
@@ -76,7 +77,7 @@ export const CommentDetail: React.FC<CommentDetailProps> = ({
           <MessageOutlined />
           <span>评论详情</span>
           {comment.isResolved && (
-            <Tag color="green" size="small">已解决</Tag>
+            <Tag color="green" style={{ fontSize: '12px' }}>已解决</Tag>
           )}
         </div>
       }

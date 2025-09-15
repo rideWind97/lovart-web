@@ -60,6 +60,7 @@ const defaultToolOptions: Record<ToolType, ToolOptions> = {
   },
   zoom: {},
   pan: {},
+  comment: {},
 };
 
 const defaultShortcuts: ShortcutMap = {
@@ -121,7 +122,7 @@ export const useToolStore = create<ToolStore>()(
     },
 
     updateShortcuts: (shortcuts) => {
-      set((state) => ({
+      set((state: any) => ({
         shortcuts: { ...state.shortcuts, ...shortcuts },
       }));
     },

@@ -36,6 +36,7 @@ export const CommentInput: React.FC<CommentInputProps> = ({
         elementId,
         author,
         color,
+        isVisible: true,
       });
       onCancel();
     }

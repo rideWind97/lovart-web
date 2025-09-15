@@ -28,7 +28,7 @@ const initialState: ChatState = {
 };
 
 export const useChatStore = create<ChatStore>()(
-  subscribeWithSelector((set, get) => ({
+  subscribeWithSelector((set) => ({
     ...initialState,
 
     addMessage: (messageData) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Button, Space, Typography, Avatar, Dropdown, Menu } from 'antd';
+import { Layout,  Typography, Menu } from 'antd';
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useUserStore } from '@/stores/userStore';
 
@@ -7,37 +7,37 @@ const { Header: AntHeader } = Layout;
 const { Title, Text } = Typography;
 
 export const Header: React.FC = () => {
-  const { user, logout } = useUserStore();
+  const {  logout } = useUserStore();
 
   const handleLogout = () => {
     logout();
   };
 
-  const userMenu = (
-    <Menu
-      items={[
-        {
-          key: 'profile',
-          icon: <UserOutlined />,
-          label: '个人资料',
-        },
-        {
-          key: 'settings',
-          icon: <SettingOutlined />,
-          label: '设置',
-        },
-        {
-          type: 'divider',
-        },
-        {
-          key: 'logout',
-          icon: <LogoutOutlined />,
-          label: '退出登录',
-          onClick: handleLogout,
-        },
-      ]}
-    />
-  );
+  // const userMenu = (
+  //   <Menu
+  //     items={[
+  //       {
+  //         key: 'profile',
+  //         icon: <UserOutlined />,
+  //         label: '个人资料',
+  //       },
+  //       {
+  //         key: 'settings',
+  //         icon: <SettingOutlined />,
+  //         label: '设置',
+  //       },
+  //       {
+  //         type: 'divider',
+  //       },
+  //       {
+  //         key: 'logout',
+  //         icon: <LogoutOutlined />,
+  //         label: '退出登录',
+  //         onClick: handleLogout,
+  //       },
+  //     ]}
+  //   />
+  // );
 
   return (
     <AntHeader className="bg-white border-b border-gray-200 px-6 flex items-center justify-between">

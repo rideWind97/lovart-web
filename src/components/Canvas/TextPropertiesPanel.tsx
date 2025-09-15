@@ -9,7 +9,7 @@ const { Option } = Select;
 
 export const TextPropertiesPanel: React.FC = () => {
   const { selectedElement, elements, updateElement, selectElement } = useCanvasStore();
-  const { toolOptions, updateToolOptions } = useToolStore();
+  const { updateToolOptions } = useToolStore();
   const [isVisible, setIsVisible] = useState(false);
 
   const selectedTextElement = selectedElement 
@@ -29,8 +29,6 @@ export const TextPropertiesPanel: React.FC = () => {
     selectedTextElement: selectedTextElement?.id,
     isVisible
   });
-
-  // const currentOptions = toolOptions.text; // 暂时注释掉，避免未使用警告
 
   const handleFontSizeChange = (value: number) => {
     if (selectedTextElement) {

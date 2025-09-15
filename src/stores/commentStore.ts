@@ -14,7 +14,7 @@ const getRandomColor = (): string => {
 
 export const useCommentStore = create<CommentState & CommentActions>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // 状态
       comments: [],
       selectedCommentId: null,

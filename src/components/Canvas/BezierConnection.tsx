@@ -53,7 +53,7 @@ export const BezierConnection: React.FC<BezierConnectionProps> = ({
     (path as any).toElementId = toPoint.elementId;
 
     // 添加点击事件
-    path.on('mousedown', (e) => {
+    path.on('mousedown', () => {
       if (onConnectionClick) {
         onConnectionClick((path as any).id);
       }

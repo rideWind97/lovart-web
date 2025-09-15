@@ -133,7 +133,7 @@ export const CommentPanel: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-1">
                     {comment.isResolved && (
-                      <Tag color="green" size="small">已解决</Tag>
+                      <Tag color="green" style={{ fontSize: '12px' }}>已解决</Tag>
                     )}
                     <Tooltip title="编辑">
                       <Button
@@ -163,7 +163,6 @@ export const CommentPanel: React.FC = () => {
                         e?.stopPropagation();
                         deleteComment(comment.id);
                       }}
-                      onClick={(e) => e.stopPropagation()}
                     >
                       <Tooltip title="删除">
                         <Button
