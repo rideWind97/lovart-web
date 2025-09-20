@@ -8,6 +8,9 @@ interface CanvasStore extends CanvasState {
   updateElement: (id: string, updates: Partial<CanvasElement>) => void;
   removeElement: (id: string) => void;
   selectElement: (id: string | null) => void;
+  selectElements: (ids: string[]) => void;
+  toggleSelect: (id: string) => void;
+  clearSelection: () => void;
   updateViewport: (viewport: Partial<Viewport>) => void;
   addToHistory: (action: string, description?: string) => void;
   undo: () => void;
@@ -22,6 +25,9 @@ interface CanvasStore extends CanvasState {
 const initialState: CanvasState = {
   elements: [],
   selectedElement: null,
+  // 扩展：多选 id 列表（向后兼容保留 selectedElement）
+  // @ts-ignore
+  selectedIds: [],
   viewport: { x: 0, y: 0, zoom: 1 },
   history: [],
   collaborators: [],
@@ -61,7 +67,26 @@ export const useCanvasStore = create<CanvasStore>()(
     },
 
     selectElement: (id) => {
-      set({ selectedElement: id });
+      set({ selectedElement: id, ...(id ? { selectedIds: [id] } : { selectedIds: [] as any }) });
+    },
+
+    selectElements: (ids) => {
+      set({ selectedIds: ids, selectedElement: ids.length === 1 ? ids[0] : null });
+    },
+
+    toggleSelect: (id) => {
+      set((state: any) => {
+        const has = state.selectedIds?.includes(id);
+        const next = has ? state.selectedIds.filter((x: string) => x !== id) : [...(state.selectedIds || []), id];
+        return {
+          selectedIds: next,
+          selectedElement: next.length === 1 ? next[0] : null,
+        };
+      });
+    },
+
+    clearSelection: () => {
+      set({ selectedIds: [], selectedElement: null });
     },
 
     updateViewport: (viewport) => {

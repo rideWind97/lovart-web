@@ -1,27 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Select, ColorPicker, Slider, Space, Typography, Divider, Button } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
-import { useCanvasStore } from '@/stores/canvasStore';
-import { useToolStore } from '@/stores/toolStore';
-import { useFabricCanvas } from '@/hooks/useFabricCanvas';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  Select,
+  ColorPicker,
+  Slider,
+  Space,
+  Typography,
+  Divider,
+  Button,
+} from "antd";
+import { CloseOutlined } from "@ant-design/icons";
+import { useCanvasStore } from "@/stores/canvasStore";
+import { useToolStore } from "@/stores/toolStore";
 
 const { Text } = Typography;
 const { Option } = Select;
 
 export const TextPropertiesPanel: React.FC = () => {
   const { selectedElement, elements, updateElement, selectElement } = useCanvasStore();
+  const selectedIds = (useCanvasStore as any)((s: any) => s.selectedIds as string[] | undefined);
   const { updateToolOptions } = useToolStore();
   const [isVisible, setIsVisible] = useState(false);
-  const fabricCanvas = useFabricCanvas();
 
-  const selectedTextElement = selectedElement 
-    ? elements.find(el => el.id === selectedElement && el.type === 'text')
+  const selectedTextElement = selectedElement
+    ? elements.find((el) => el.id === selectedElement && el.type === "text")
     : null;
-
-  // 调试信息
-  useEffect(() => {
-    console.log('TextPropertiesPanel - Fabric canvas available:', !!fabricCanvas);
-  }, [fabricCanvas]);
+  const multiSelectedTextIds = (selectedIds || []).filter((id: string) => {
+    const el = elements.find((e) => e.id === id);
+    return el && el.type === 'text';
+  });
 
   // 当选中文本元素时显示面板
   useEffect(() => {
@@ -29,122 +36,89 @@ export const TextPropertiesPanel: React.FC = () => {
       setIsVisible(true);
     }
   }, [selectedTextElement]);
-
-  // 调试信息
-  console.log('TextPropertiesPanel render:', {
-    selectedElement,
-    selectedTextElement: selectedTextElement?.id,
-    isVisible
-  });
-
+  
   const handleFontSizeChange = (value: number) => {
-    console.log('Font size change:', value, 'Selected element:', selectedTextElement);
-    
-    if (selectedTextElement) {
-      // 更新 Zustand 状态
-      updateElement(selectedTextElement.id, {
-        style: { ...selectedTextElement.style, fontSize: value }
+    if (multiSelectedTextIds && multiSelectedTextIds.length > 1) {
+      multiSelectedTextIds.forEach((id: string) => {
+        const el = elements.find((e) => e.id === id)!;
+        updateElement(id, { style: { ...(el.style || {}), fontSize: value } });
       });
-      
-      // 更新 Fabric.js 画布对象
-      if (fabricCanvas) {
-        console.log('Fabric canvas found, updating object...');
-        const activeObject = fabricCanvas.getActiveObject();
-        console.log('Active object:', activeObject);
-        
-        if (activeObject && activeObject.type === 'i-text') {
-          console.log('Updating IText fontSize to:', value);
-          (activeObject as any).set('fontSize', value);
-          fabricCanvas.renderAll();
-          console.log('Font size updated successfully');
-        } else {
-          console.log('No active IText object found');
-        }
-      } else {
-        console.log('Fabric canvas not found');
-      }
+      return;
+    }
+    if (selectedTextElement) {
+      updateElement(selectedTextElement.id, {
+        style: { ...(selectedTextElement.style || {}), fontSize: value },
+      });
     } else {
-      updateToolOptions('text', { fontSize: value });
+      updateToolOptions("text", { fontSize: value });
     }
   };
 
   const handleFontFamilyChange = (value: string) => {
-    if (selectedTextElement) {
-      // 更新 Zustand 状态
-      updateElement(selectedTextElement.id, {
-        style: { ...selectedTextElement.style, fontFamily: value }
+    if (multiSelectedTextIds && multiSelectedTextIds.length > 1) {
+      multiSelectedTextIds.forEach((id: string) => {
+        const el = elements.find((e) => e.id === id)!;
+        updateElement(id, { style: { ...(el.style || {}), fontFamily: value } });
       });
-      
-      // 更新 Fabric.js 画布对象
-      if (fabricCanvas) {
-        const activeObject = fabricCanvas.getActiveObject();
-        if (activeObject && activeObject.type === 'i-text') {
-          (activeObject as any).set('fontFamily', value);
-          fabricCanvas.renderAll();
-        }
-      }
+      return;
+    }
+    if (selectedTextElement) {
+      updateElement(selectedTextElement.id, {
+        style: { ...(selectedTextElement.style || {}), fontFamily: value },
+      });
     } else {
-      updateToolOptions('text', { fontFamily: value });
+      updateToolOptions("text", { fontFamily: value });
     }
   };
 
   const handleColorChange = (color: string) => {
-    if (selectedTextElement) {
-      // 更新 Zustand 状态
-      updateElement(selectedTextElement.id, {
-        style: { ...selectedTextElement.style, fill: color }
+    if (multiSelectedTextIds && multiSelectedTextIds.length > 1) {
+      multiSelectedTextIds.forEach((id: string) => {
+        const el = elements.find((e) => e.id === id)!;
+        updateElement(id, { style: { ...(el.style || {}), fill: color } });
       });
-      
-      // 更新 Fabric.js 画布对象
-      if (fabricCanvas) {
-        const activeObject = fabricCanvas.getActiveObject();
-        if (activeObject && activeObject.type === 'i-text') {
-          (activeObject as any).set('fill', color);
-          fabricCanvas.renderAll();
-        }
-      }
+      return;
+    }
+    if (selectedTextElement) {
+      updateElement(selectedTextElement.id, {
+        style: { ...(selectedTextElement.style || {}), fill: color },
+      });
     } else {
-      updateToolOptions('text', { fillColor: color });
+      updateToolOptions("text", { fillColor: color });
     }
   };
 
   const handleTextAlignChange = (value: string) => {
-    if (selectedTextElement) {
-      // 更新 Zustand 状态
-      updateElement(selectedTextElement.id, {
-        style: { ...selectedTextElement.style, textAlign: value as any }
+    if (multiSelectedTextIds && multiSelectedTextIds.length > 1) {
+      multiSelectedTextIds.forEach((id: string) => {
+        const el = elements.find((e) => e.id === id)!;
+        updateElement(id, { style: { ...(el.style || {}), textAlign: value as any } });
       });
-      
-      // 更新 Fabric.js 画布对象
-      if (fabricCanvas) {
-        const activeObject = fabricCanvas.getActiveObject();
-        if (activeObject && activeObject.type === 'i-text') {
-          (activeObject as any).set('textAlign', value);
-          fabricCanvas.renderAll();
-        }
-      }
+      return;
+    }
+    if (selectedTextElement) {
+      updateElement(selectedTextElement.id, {
+        style: { ...(selectedTextElement.style || {}), textAlign: value as any },
+      });
     } else {
-      updateToolOptions('text', { textAlign: value as any });
+      updateToolOptions("text", { textAlign: value as any });
     }
   };
 
   const handleFontWeightChange = (value: string) => {
-    if (selectedTextElement) {
-      // 更新 Zustand 状态
-      updateElement(selectedTextElement.id, {
-        style: { ...selectedTextElement.style, fontWeight: value }
+    if (multiSelectedTextIds && multiSelectedTextIds.length > 1) {
+      multiSelectedTextIds.forEach((id: string) => {
+        const el = elements.find((e) => e.id === id)!;
+        updateElement(id, { style: { ...(el.style || {}), fontWeight: value } });
       });
-      
-      // 更新 Fabric.js 画布对象
-      if (fabricCanvas) {
-        const activeObject = fabricCanvas.getActiveObject();
-        if (activeObject && activeObject.type === 'i-text') {
-          (activeObject as any).set('fontWeight', value);
-          fabricCanvas.renderAll();
-        }
-      }
+      return;
+    }
+    if (selectedTextElement) {
+      updateElement(selectedTextElement.id, {
+        style: { ...(selectedTextElement.style || {}), fontWeight: value },
+      });
     } else {
-      updateToolOptions('text', { fontWeight: value });
+      updateToolOptions("text", { fontWeight: value });
     }
   };
 
@@ -158,23 +132,22 @@ export const TextPropertiesPanel: React.FC = () => {
   }
 
   return (
-    <Card 
-      size="small" 
+    <Card
+      size="small"
       title={
         <div className="flex items-center justify-between">
           <span>文本属性</span>
-          <Button 
-            type="text" 
-            size="small" 
-            icon={<CloseOutlined />} 
+          <Button
+            type="text"
+            size="small"
+            icon={<CloseOutlined />}
             onClick={handleClose}
           />
         </div>
-      } 
+      }
       className="w-64"
     >
       <Space direction="vertical" className="w-full">
-        {/* 字体大小 */}
         <div>
           <Text className="text-sm font-medium">字体大小</Text>
           <Slider
@@ -188,11 +161,10 @@ export const TextPropertiesPanel: React.FC = () => {
 
         <Divider className="my-2" />
 
-        {/* 字体族 */}
         <div>
           <Text className="text-sm font-medium">字体</Text>
           <Select
-            value={selectedTextElement.style?.fontFamily || 'Arial'}
+            value={selectedTextElement.style?.fontFamily || "Arial"}
             onChange={handleFontFamilyChange}
             className="w-full mt-2"
           >
@@ -210,11 +182,10 @@ export const TextPropertiesPanel: React.FC = () => {
 
         <Divider className="my-2" />
 
-        {/* 字体颜色 */}
         <div>
           <Text className="text-sm font-medium">颜色</Text>
           <ColorPicker
-            value={selectedTextElement.style?.fill || '#000000'}
+            value={selectedTextElement.style?.fill || "#000000"}
             onChange={(color) => handleColorChange(color.toHexString())}
             className="w-full mt-2"
             showText
@@ -223,11 +194,10 @@ export const TextPropertiesPanel: React.FC = () => {
 
         <Divider className="my-2" />
 
-        {/* 文本对齐 */}
         <div>
           <Text className="text-sm font-medium">对齐方式</Text>
           <Select
-            value={selectedTextElement.style?.textAlign || 'left'}
+            value={selectedTextElement.style?.textAlign || "left"}
             onChange={handleTextAlignChange}
             className="w-full mt-2"
           >
@@ -239,11 +209,10 @@ export const TextPropertiesPanel: React.FC = () => {
 
         <Divider className="my-2" />
 
-        {/* 字体粗细 */}
         <div>
           <Text className="text-sm font-medium">字体粗细</Text>
           <Select
-            value={selectedTextElement.style.fontWeight || 'normal'}
+            value={selectedTextElement.style.fontWeight || "normal"}
             onChange={handleFontWeightChange}
             className="w-full mt-2"
           >

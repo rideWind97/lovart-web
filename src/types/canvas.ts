@@ -26,6 +26,15 @@ export interface ElementStyle {
   fontWeight?: string;
   textAlign?: 'left' | 'center' | 'right';
   lineHeight?: number;
+  // 文本阴影（Konva 兼容）
+  shadowColor?: string;
+  shadowBlur?: number;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
+  shadowOpacity?: number;
+  shadowEnabled?: boolean;
+  // 图层模糊（Konva Filters.Blur）
+  blurRadius?: number;
 }
 
 export type ElementType = 'text' | 'image' | 'rect' | 'circle' | 'line' | 'path' | 'group' | 'connectionPoint';
@@ -86,6 +95,9 @@ export interface LineElement extends CanvasElement {
     fromElementId?: string; // 起始元素ID
     toElementId?: string;   // 目标元素ID
     connectionType?: 'straight' | 'curved' | 'orthogonal'; // 连接线类型
+    // 可选的贝塞尔控制点（仅 curved 使用）
+    control1?: Position;
+    control2?: Position;
   };
 }
 
@@ -133,6 +145,8 @@ export interface Collaborator {
 export interface CanvasState {
   elements: CanvasElement[];
   selectedElement: string | null;
+  // 新增：支持多选（与 selectedElement 向后兼容）
+  selectedIds?: string[];
   viewport: Viewport;
   history: HistoryState[];
   collaborators: Collaborator[];

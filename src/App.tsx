@@ -18,7 +18,7 @@ const theme = {
   token: {
     colorPrimary: '#0ea5e9',
     borderRadius: 6,
-    fontFamily: 'Inter, system-ui, sans-serif',
+    fontFamily: 'Inter, "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif',
   },
 };
 
