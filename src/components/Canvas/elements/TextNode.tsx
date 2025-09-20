@@ -10,9 +10,12 @@ interface Props {
   onSelect: (id: string) => void;
   onUpdate: (id: string, updates: Partial<CanvasElement>) => void;
   onDblClick?: (id: string, currentText: string) => void;
+  onDragStart?: (e: any) => void;
+  onDragMove?: (e: any) => void;
+  draggable?: boolean;
 }
 
-export const TextNode: React.FC<Props> = ({ element: el, activeTool, onSelect, onUpdate, onDblClick }) => {
+export const TextNode: React.FC<Props> = ({ element: el, activeTool, onSelect, onUpdate, onDblClick, onDragStart, onDragMove, draggable }) => {
   const textRef = useRef<Konva.Text | null>(null);
 
   useEffect(() => {
@@ -77,10 +80,12 @@ export const TextNode: React.FC<Props> = ({ element: el, activeTool, onSelect, o
       shadowEnabled={(el.style as any)?.shadowEnabled}
       filters={filters as any}
       blurRadius={blurRadius as any}
-      draggable={activeTool === 'select'}
+      draggable={draggable ?? (activeTool === 'select')}
       onClick={() => onSelect(el.id)}
       onTap={() => onSelect(el.id)}
       onDblClick={() => onDblClick?.(el.id, el.data?.text || '')}
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
       onDragEnd={(e) => {
         const node = e.target as Konva.Text;
         onUpdate(el.id, {

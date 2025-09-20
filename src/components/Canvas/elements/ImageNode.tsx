@@ -9,9 +9,11 @@ interface Props {
   activeTool: string;
   onSelect: (id: string) => void;
   onUpdate: (id: string, updates: Partial<CanvasElement>) => void;
+  onDragStart?: (e: any) => void;
+  onDragMove?: (e: any) => void;
 }
 
-export const ImageNode: React.FC<Props> = ({ element: el, activeTool, onSelect, onUpdate }) => {
+export const ImageNode: React.FC<Props> = ({ element: el, activeTool, onSelect, onUpdate, onDragStart, onDragMove }) => {
   const img = useImageLoader(el.data?.src as string | undefined);
   return (
     <KonvaImage
@@ -25,6 +27,8 @@ export const ImageNode: React.FC<Props> = ({ element: el, activeTool, onSelect, 
       draggable={activeTool === 'select'}
       onClick={() => onSelect(el.id)}
       onTap={() => onSelect(el.id)}
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
       onDragEnd={(e) => {
         const node = e.target as Konva.Image;
         onUpdate(el.id, {

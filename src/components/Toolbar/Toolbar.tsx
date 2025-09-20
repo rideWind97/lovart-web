@@ -7,6 +7,7 @@ import {
   PictureOutlined,
   EditOutlined,
   MessageOutlined,
+  LineOutlined,
 } from "@ant-design/icons";
 import { useToolStore } from "@/stores/toolStore";
 import { ToolType } from "@/types/tool";
@@ -16,7 +17,7 @@ const tools = [
   { type: "text" as ToolType, icon: <FontSizeOutlined />, name: "文本" },
   { type: "rect" as ToolType, icon: <BorderOutlined />, name: "矩形" },
   // { type: "circle" as ToolType, icon: <CiCircleOutlined />, name: "圆形" },
-  // { type: "line" as ToolType, icon: <LineOutlined />, name: "直线" },
+  { type: "line" as ToolType, icon: <LineOutlined />, name: "直线" },
   { type: "image" as ToolType, icon: <PictureOutlined />, name: "图片" },
   { type: "pen" as ToolType, icon: <EditOutlined />, name: "画笔" },
   { type: "comment" as ToolType, icon: <MessageOutlined />, name: "评论" },

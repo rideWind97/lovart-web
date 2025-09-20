@@ -9,6 +9,8 @@ import { TextToolbar } from "../Canvas/TextToolbar";
 import { CommentPanel } from "../Comment/CommentPanel";
 import { useCanvasStore } from "@/stores/canvasStore";
 import { useCommentStore } from "@/stores/commentStore";
+import { RectToolbar } from "../Canvas/RectToolbar";
+import { LineToolbar } from "../Canvas/LineToolbar";
 
 const { Content } = Layout;
 
@@ -28,6 +30,22 @@ export const MainLayout: React.FC = () => {
     return !!selectedTextElement;
   }, [selectedIds, elements, selectedTextElement]);
 
+  const hasRectSelection = React.useMemo(() => {
+    if (selectedIds && selectedIds.length) {
+      return selectedIds.some((id: string) => elements.some((e) => e.id === id && e.type === 'rect'));
+    }
+    const el = selectedElement ? elements.find(e => e.id === selectedElement) : null;
+    return !!el && el.type === 'rect';
+  }, [selectedIds, elements, selectedElement]);
+
+  const hasLineSelection = React.useMemo(() => {
+    if (selectedIds && selectedIds.length) {
+      return selectedIds.some((id: string) => elements.some((e) => e.id === id && e.type === 'line'));
+    }
+    const el = selectedElement ? elements.find(e => e.id === selectedElement) : null;
+    return !!el && el.type === 'line';
+  }, [selectedIds, elements, selectedElement]);
+
   return (
     <Layout className="h-screen">
       <Header />
@@ -43,6 +61,18 @@ export const MainLayout: React.FC = () => {
         {hasTextSelection && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
             <TextToolbar />
+          </div>
+        )}
+
+        {!hasTextSelection && hasRectSelection && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
+            <RectToolbar />
+          </div>
+        )}
+
+        {!hasTextSelection && !hasRectSelection && hasLineSelection && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
+            <LineToolbar />
           </div>
         )}
 

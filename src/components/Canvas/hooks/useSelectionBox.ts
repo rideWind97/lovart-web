@@ -20,16 +20,23 @@ export function useSelectionBox(activeTool: string): SelectionBoxState {
     if (activeTool !== 'select') return;
     const stage = e.target.getStage();
     if (!stage) return;
-    const clickedOnEmpty = e.target === stage;
-    const evt = e.evt as MouseEvent;
-    if (clickedOnEmpty && evt.shiftKey) {
-      const p = stage.getPointerPosition();
+    const type = (e.target as any)?.getType ? (e.target as any).getType() : (e.target as any)?.className;
+    const clickedOnEmpty = e.target === stage || type === 'Layer' || type === 'Group';
+    if (clickedOnEmpty) {
+      const pos = stage.getPointerPosition();
+      if (!pos) return;
+      // 转换为舞台坐标（去除缩放和平移影响）
+      const transform = stage.getAbsoluteTransform().copy();
+      transform.invert();
+      const p = transform.point(pos);
       if (!p) return;
       setIsSelecting(true);
       setStart(p);
       setSelectRect({ x: p.x, y: p.y, width: 0, height: 0 });
-    } else if (clickedOnEmpty) {
-      selectElement(null);
+    } else {
+      // 点击非空白，清理框选状态但不清空已有选择
+      setIsSelecting(false);
+      setStart(null);
     }
   };
 
@@ -37,7 +44,11 @@ export function useSelectionBox(activeTool: string): SelectionBoxState {
     if (!isSelecting || !start) return;
     const stage = e.target.getStage();
     if (!stage) return;
-    const p = stage.getPointerPosition();
+    const pos = stage.getPointerPosition();
+    if (!pos) return;
+    const transform = stage.getAbsoluteTransform().copy();
+    transform.invert();
+    const p = transform.point(pos);
     if (!p) return;
     setSelectRect({
       x: Math.min(start.x, p.x),
