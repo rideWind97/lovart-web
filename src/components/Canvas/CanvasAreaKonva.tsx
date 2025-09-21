@@ -118,15 +118,6 @@ export const CanvasAreaKonva: React.FC = () => {
   // 画笔绘制状态
   const [drawingId, setDrawingId] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  // 组拖拽：记录起点指针与基准位置
-  const dragBasePositionsRef = useRef<Record<string, { x: number; y: number }>>(
-    {}
-  );
-  const [dragStartPointer, setDragStartPointer] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
-
   // 连接线（直线）创建状态
   const [lineCreatingId, setLineCreatingId] = useState<string | null>(null);
   const [lineStart, setLineStart] = useState<{ x: number; y: number } | null>(
@@ -337,9 +328,7 @@ export const CanvasAreaKonva: React.FC = () => {
     });
   };
 
-  const handlePenMouseUp = (
-    e: Konva.KonvaEventObject<MouseEvent | PointerEvent | TouchEvent>
-  ) => {
+  const handlePenMouseUp = () => {
     if (activeTool !== "pen") return;
   };
 
@@ -363,7 +352,7 @@ export const CanvasAreaKonva: React.FC = () => {
   const lineEndpointControls = useMemo(() => {
     if (!selectedElement) return null;
     const lineEl = elements.find(
-      (e) => e.id === selectedElement && e.type === "line"
+      (e: any) => e.id === selectedElement && e.type === "line"
     );
     if (!lineEl) return null;
     const pts = (lineEl.data?.points || []) as { x: number; y: number }[];
@@ -576,7 +565,7 @@ export const CanvasAreaKonva: React.FC = () => {
         onMouseUp={(
           e: Konva.KonvaEventObject<MouseEvent | PointerEvent | TouchEvent>
         ) => {
-          if (activeTool === "pen") return handlePenMouseUp(e);
+          if (activeTool === "pen") return handlePenMouseUp();
           if (activeTool === "line" && lineCreatingId && lineStart) {
             const p0 = getRelativePointer();
             const store = (useCanvasStore as any).getState();
@@ -787,7 +776,7 @@ export const CanvasAreaKonva: React.FC = () => {
           if (id) {
             updateElement(id, {
               data: {
-                ...(elements.find((x) => x.id === id)?.data || {}),
+                ...(elements.find((x: any) => x.id === id)?.data || {}),
                 text: editingValue,
               },
               updatedAt: new Date(),

@@ -11,7 +11,7 @@ export interface SelectionBoxState {
 }
 
 export function useSelectionBox(activeTool: string): SelectionBoxState {
-  const { elements, selectElements, selectElement } = useCanvasStore();
+  const { elements, selectElements } = useCanvasStore();
   const [isSelecting, setIsSelecting] = useState(false);
   const [start, setStart] = useState<{ x: number; y: number } | null>(null);
   const [selectRect, setSelectRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);

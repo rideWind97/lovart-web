@@ -38,7 +38,7 @@ export const LineToolbar: React.FC = () => {
 
   const batchUpdateStyle = (patch: Record<string, any>) => {
     if (lineIds.length) {
-      lineIds.forEach((id) => {
+      lineIds.forEach((id: string) => {
         const el = elements.find((e) => e.id === id)!;
         updateElement(id, { style: { ...(el.style || {}), ...patch } });
       });
@@ -48,7 +48,7 @@ export const LineToolbar: React.FC = () => {
   };
   const batchUpdateData = (patch: Record<string, any>) => {
     if (lineIds.length) {
-      lineIds.forEach((id) => {
+      lineIds.forEach((id: string) => {
         const el = elements.find((e) => e.id === id)!;
         updateElement(id, { data: { ...(el.data || {}), ...patch } } as any);
       });
