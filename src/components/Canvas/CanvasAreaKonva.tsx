@@ -281,9 +281,7 @@ export const CanvasAreaKonva: React.FC = () => {
     return transform.point(pos);
   };
 
-  const handlePenMouseDown = (
-    e: Konva.KonvaEventObject<MouseEvent | PointerEvent | TouchEvent>
-  ) => {
+  const handlePenMouseDown = () => {
     if (activeTool !== "pen") return;
     const p = getRelativePointer();
     if (!p) return;
@@ -312,9 +310,7 @@ export const CanvasAreaKonva: React.FC = () => {
     setIsDrawing(true);
   };
 
-  const handlePenMouseMove = (
-    e: Konva.KonvaEventObject<MouseEvent | PointerEvent | TouchEvent>
-  ) => {
+  const handlePenMouseMove = () => {
     if (activeTool !== "pen" || !isDrawing || !drawingId) return;
     const p = getRelativePointer();
     if (!p) return;
