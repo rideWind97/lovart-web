@@ -69,22 +69,30 @@ export const ElementRenderer: React.FC<Props> = ({ element: el, activeTool, onSe
         const b1x = p2.x, b1y = p2.y + sgnV * r1;
         const a2x = p3.x, a2y = p3.y - sgnV * r2;
         const b2x = p3.x + sgnH2 * r2, b2y = p3.y;
-        const d = [
-          `M ${p1.x} ${p1.y}`,
-          `L ${a1x} ${a1y}`,
-          `Q ${p2.x} ${p2.y} ${b1x} ${b1y}`,
-          `L ${a2x} ${a2y}`,
-          `Q ${p3.x} ${p3.y} ${b2x} ${b2y}`,
-          `L ${p4.x} ${p4.y}`,
-        ].join(' ');
+
         const stroke = el.style?.stroke || '#9ca3af';
         const strokeWidth = el.style?.strokeWidth || 2;
         const arrowSize = (el.data?.arrowSize ?? 10) as number;
         const arrowEnds = (el.data?.arrowEnds ?? 'start') as 'none' | 'start' | 'end' | 'both';
-        // 起点箭头沿第一段水平（p1->p2）；终点箭头沿最后一段水平（p3->p4）
+        const hasStartArrow = arrowEnds !== 'none' && (arrowEnds === 'start' || arrowEnds === 'both');
+        const hasEndArrow = arrowEnds !== 'none' && (arrowEnds === 'end' || arrowEnds === 'both');
+        // 在有箭头时，将主路径的起点/终点沿水平段更大幅度内收（考虑抗锯齿与圆端帽），避免箭头处出现残余短线
+        const inset = arrowSize + strokeWidth;
+        const p1Path = hasStartArrow ? { x: p1.x + sgnH1 * inset, y: p1.y } : p1;
+        const p4Path = hasEndArrow ? { x: p4.x - sgnH2 * inset, y: p4.y } : p4;
+        const pathStart = hasStartArrow ? { x: a1x, y: a1y } : p1Path;
+        const d = [
+          `M ${pathStart.x} ${pathStart.y}`,
+          `Q ${p2.x} ${p2.y} ${b1x} ${b1y}`,
+          `L ${a2x} ${a2y}`,
+          `Q ${p3.x} ${p3.y} ${b2x} ${b2y}`,
+          // 如果没有终点箭头，补上最后一段直线；有箭头时由 Arrow 负责该段
+          ...(hasEndArrow ? [] : [`L ${p4Path.x} ${p4Path.y}`]),
+        ].join(' ');
+        // 让箭头的轴线替代最前/最后的直线段
         const sx1 = p1.x, sy1 = p1.y;
-        const sx2 = p1.x + sgnH1 * arrowSize * 2, sy2 = p1.y;
-        const ex1 = p4.x - sgnH2 * arrowSize * 2, ey1 = p4.y;
+        const sx2 = a1x, sy2 = a1y;
+        const ex1 = b2x, ey1 = b2y;
         return (
           <>
             <Path
@@ -93,7 +101,7 @@ export const ElementRenderer: React.FC<Props> = ({ element: el, activeTool, onSe
               data={d}
               stroke={stroke}
               strokeWidth={strokeWidth}
-              lineCap="round"
+              lineCap={hasStartArrow || hasEndArrow ? 'butt' : 'round'}
               lineJoin="round"
             />
             {arrowEnds !== 'none' && (arrowEnds === 'start' || arrowEnds === 'both') && (
@@ -104,6 +112,7 @@ export const ElementRenderer: React.FC<Props> = ({ element: el, activeTool, onSe
                 fill={stroke}
                 stroke={stroke}
                 strokeWidth={strokeWidth}
+                lineCap="butt"
               />
             )}
             {arrowEnds !== 'none' && (arrowEnds === 'end' || arrowEnds === 'both') && (
@@ -114,6 +123,7 @@ export const ElementRenderer: React.FC<Props> = ({ element: el, activeTool, onSe
                 fill={stroke}
                 stroke={stroke}
                 strokeWidth={strokeWidth}
+                lineCap="butt"
               />
             )}
           </>
